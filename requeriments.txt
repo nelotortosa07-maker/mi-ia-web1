@@ -1,5 +1,0 @@
-streamlit
-tf-keras
-streamlit-drawable-canvas
-opencv-python-headless
-numpy
