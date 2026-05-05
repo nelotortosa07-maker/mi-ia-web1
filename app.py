@@ -1,5 +1,5 @@
 import streamlit as st
-import tf_keras as tf
+import tensorflow as tf
 from streamlit_drawable_canvas import st_canvas
 import cv2
 import numpy as np
@@ -16,7 +16,7 @@ def load_my_model():
 
 model = load_my_model()
 
-# 2. Crear el lienzo para dibujar
+# 2. Crear el lienzo (Canvas) para dibujar
 canvas_result = st_canvas(
     fill_color="white", stroke_width=20,
     stroke_color="white",
@@ -26,16 +26,17 @@ canvas_result = st_canvas(
 
 # 3. Procesar el dibujo y predecir
 if canvas_result.image_data is not None:
+    # Convertir el dibujo a 28x28 pixeles
     img = cv2.resize(canvas_result.image_data.astype('uint8'), (28, 28))
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    img = img / 255.0  # Normalizar
-
+    img = img / 255.0 # Normalizar
+    
     # Predicción
     pred = model.predict(img.reshape(1, 28, 28, 1))
     clase = np.argmax(pred)
     confianza = np.max(pred)
-
-    # 4. Mostrar resultados con umbral de seguridad
+    
+    # 4. Mostrar resultados
     st.subheader(f"Resultado: {clase}")
     if confianza < 0.80:
         st.warning(f"Confianza baja ({confianza:.2%}). ¿Podrías dibujar más claro?")
